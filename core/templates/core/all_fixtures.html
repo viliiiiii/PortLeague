@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Primeira Liga Fixtures</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #181818;
+            color: #fff;
+        }
+        h1 {
+            color: #ffcc00;
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: #222;
+            color: #fff;
+            font-size: 16px;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #444;
+            text-align: left;
+        }
+        th {
+            background: #333;
+        }
+        tr:hover {
+            background: #333;
+        }
+        img {
+            width: 25px;
+            height: 25px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        .score {
+            font-weight: bold;
+            color: #ffcc00;
+            text-align: center;
+        }
+        .button {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background: #ffcc00;
+            color: #000;
+            font-weight: bold;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .button:hover {
+            background: #ffdb4d;
+        }
+    </style>
+</head>
+<body>
+    {% extends 'core/base.html' %}
+
+    {% block content %}
+
+    <h1>All Primeira Liga Fixtures</h1>
+
+    <a href="{% url 'home' %}" class="button">Back to Matchweek View</a>
+
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Home Team</th>
+            <th>Score</th>
+            <th>Away Team</th>
+        </tr>
+        {% for match in all_matches %}
+        <tr>
+            <td>{{ match.formatted_date }}</td>
+            <td>
+                <img src="{{ match.homeTeam.crest }}" alt="Logo">
+                {{ match.homeTeam.name }}
+            </td>
+            <td class="score">
+                {% if match.match_status == "FINISHED" %}
+                    {% if match.home_score != "N/A" and match.away_score != "N/A" %}
+                        {{ match.home_score }} - {{ match.away_score }}
+                    {% else %}
+                        Not Available
+                    {% endif %}
+                {% else %}
+                    TBD
+                {% endif %}
+            </td>
+            <td>
+                <img src="{{ match.awayTeam.crest }}" alt="Logo">
+                {{ match.awayTeam.name }}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No fixtures available.</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>
+
+{% endblock %}

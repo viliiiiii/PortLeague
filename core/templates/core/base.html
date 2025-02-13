@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PortLeague</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #181818;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #222;
+            padding: 15px;
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            margin: 15px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            color: #ffcc00;
+        }
+
+        /* Ensures the navbar stays in one row and spaces out elements */
+        .navbar-right {
+            margin-left: auto;
+        }
+
+        .signup-button {
+            background-color: #ffcc00;
+            color: black;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 15px; /* Adds space between links and the button */
+        }
+
+        .signup-button:hover {
+            background-color: #696348;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'all_fixtures' %}">All Fixtures</a>
+            <a href="{% url 'standings:standings' %}">Standings</a>
+            <a href="{% url 'games:quiz' %}">Quiz</a>
+            <a href="{% url 'games:prediction_polls' %}">Prediction Polls</a>
+        </div>
+    
+        <div class="navbar-right">
+            <a href="{}" class="signup-button">Sign Up</a>
+        </div>
+    </div>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>

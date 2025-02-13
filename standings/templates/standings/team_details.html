@@ -1,0 +1,89 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h1>{{ team.name }}</h1>
+
+<!-- Team Logo -->
+<img src="{{ team.crest }}" alt="{{ team.name }} Logo" style="width: 100px; height: 100px;">
+
+<!-- Team Information -->
+<p><strong>Founded:</strong> {{ team.founded }}</p>
+<p><strong>Venue:</strong> {{ team.venue }}</p>
+<p><strong>Coach:</strong> {{ team.coach.name }}</p>
+
+<!-- Recent Matches -->
+<h2>Recent Matches</h2>
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Opponent</th>
+        <th>Score</th>
+    </tr>
+    {% for match in recent_matches %}
+    <tr>
+        <td>{{ match.formatted_date }}</td>
+        <td>
+            {% if match.homeTeam.id == team.id %}
+                vs {{ match.awayTeam.name }} (H)
+            {% else %}
+                vs {{ match.homeTeam.name }} (A)
+            {% endif %}
+        </td>
+        <td>
+            {% if match.score.fullTime.home is not None and match.score.fullTime.away is not None %}
+                {{ match.score.fullTime.home }} - {{ match.score.fullTime.away }}
+            {% else %}
+                TBD
+            {% endif %}
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">No recent matches found.</td></tr>
+    {% endfor %}
+</table>
+
+<!-- Upcoming Matches -->
+<h2>Upcoming Matches</h2>
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Opponent</th>
+    </tr>
+    {% for match in upcoming_matches %}
+    <tr>
+        <td>{{ match.formatted_date }}</td>
+        <td>
+            {% if match.homeTeam.id == team.id %}
+                vs {{ match.awayTeam.name }} (H)
+            {% else %}
+                vs {{ match.homeTeam.name }} (A)
+            {% endif %}
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="2">No upcoming matches found.</td></tr>
+    {% endfor %}
+</table>
+
+<!-- Squad List -->
+<h2>Squad List</h2>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Position</th>
+        <th>Age</th>
+        <th>Nationality</th>
+    </tr>
+    {% for player in squad %}
+    <tr>
+        <td>{{ player.name }}</td>
+        <td>{{ player.position }}</td>
+        <td>{{ player.age }}</td>
+        <td>{{ player.nationality }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No squad information available.</td></tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

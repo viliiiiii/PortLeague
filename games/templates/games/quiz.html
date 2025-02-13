@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h1>Football Quiz</h1>
+
+{% if error %}
+    <p>{{ error }}</p>
+{% else %}
+    <h2>{{ question.question }}</h2>
+    
+    <form method="POST">
+        {% csrf_token %}
+        <input type="radio" name="answer" value="A"> {{ question.option_a }}<br>
+        <input type="radio" name="answer" value="B"> {{ question.option_b }}<br>
+        <input type="radio" name="answer" value="C"> {{ question.option_c }}<br>
+        <input type="radio" name="answer" value="D"> {{ question.option_d }}<br>
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if result %}
+        <p><strong>{{ result }}</strong></p>
+    {% endif %}
+{% endif %}
+
+{% endblock %}
+

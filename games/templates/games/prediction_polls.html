@@ -1,0 +1,30 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h1>Match Prediction Polls</h1>
+<p>Vote for who you think will win upcoming matches!</p>
+
+<form id="pollForm">
+    <div class="poll">
+        <p><strong>Sporting CP vs FC Porto</strong></p>
+        <input type="radio" name="match1" value="Sporting"> Sporting CP <br>
+        <input type="radio" name="match1" value="Draw"> Draw <br>
+        <input type="radio" name="match1" value="Porto"> FC Porto <br>
+    </div>
+
+    <div class="poll">
+        <p><strong>SL Benfica vs Braga</strong></p>
+        <input type="radio" name="match2" value="Benfica"> SL Benfica <br>
+        <input type="radio" name="match2" value="Draw"> Draw <br>
+        <input type="radio" name="match2" value="Braga"> Braga <br>
+    </div>
+
+    <button type="button" onclick="submitPoll()">Submit Vote</button>
+</form>
+
+<script>
+function submitPoll() {
+    alert("Vote submitted! Live results will be added soon.");
+}
+</script>
+{% endblock %}

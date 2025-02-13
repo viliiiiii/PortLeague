@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primeira Liga - Fixtures</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #181818;
+            color: #fff;
+        }
+        h1, h2 {
+            color: #f8f8f8;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: #222;
+            color: #fff;
+            font-size: 16px;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #444;
+            text-align: left;
+        }
+        th {
+            background: #333;
+        }
+        tr:hover {
+            background: #333;
+        }
+        img {
+            width: 25px;
+            height: 25px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        .score {
+            font-weight: bold;
+            color: #f8f8f8;
+            text-align: center;
+        }
+        .button {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background: #ffcc00;
+            color: #000;
+            font-weight: bold;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .button:hover {
+            background: #ffdb4d;
+        }
+    </style>
+</head>
+<body>
+    {% extends 'core/base.html' %}
+
+    {% block content %}
+    <h1>Primeira Liga</h1>
+
+   
+    <!-- Upcoming Matches Table -->
+    <h2>Next Matchweek</h2>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Home Team</th>
+            <th>Score</th>
+            <th>Away Team</th>
+        </tr>
+        {% for match in upcoming_matches %}
+        <tr>
+            <td>{{ match.formatted_date }}</td>
+            <td>
+                <img src="{{ match.homeTeam.crest }}" alt="Logo">
+                {{ match.homeTeam.name }}
+            </td>
+            <td class="score">
+                {% if match.match_status == "FINISHED" %}
+                    {{ match.home_score }} - {{ match.away_score }}
+                {% else %}
+                    TBD
+                {% endif %}
+            </td>
+            <td>
+                <img src="{{ match.awayTeam.crest }}" alt="Logo">
+                {{ match.awayTeam.name }}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No upcoming matches available.</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+     <!-- Recent Matches Table -->
+     <h2>Latest Matchweek</h2>
+     <table>
+         <tr>
+             <th>Date</th>
+             <th>Home Team</th>
+             <th>Score</th>
+             <th>Away Team</th>
+         </tr>
+         {% for match in recent_matches %}
+         <tr>
+             <td>{{ match.formatted_date }}</td>
+             <td>
+                 <img src="{{ match.homeTeam.crest }}" alt="Logo">
+                 {{ match.homeTeam.name }}
+             </td>
+             <td class="score">
+                 {% if match.match_status == "FINISHED" %}
+                     {{ match.home_score }} - {{ match.away_score }}
+                 {% else %}
+                     TBD
+                 {% endif %}
+             </td>
+             <td>
+                 <img src="{{ match.awayTeam.crest }}" alt="Logo">
+                 {{ match.awayTeam.name }}
+             </td>
+         </tr>
+         {% empty %}
+         <tr>
+             <td colspan="4">No recent matches available.</td>
+         </tr>
+         {% endfor %}
+     </table>
+ 
+ 
+     <a href="{% url 'all_fixtures' %}" class="button">View All Fixtures</a>
+ 
+    
+
+</body>
+</html>
+
+{% endblock %}
