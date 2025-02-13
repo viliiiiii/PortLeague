@@ -3,8 +3,10 @@ certifi==2024.12.14
 charset-normalizer==3.4.1
 Django==5.0.4
 django-jazzmin==3.0.0
+gunicorn==23.0.0
 idna==3.10
 numpy==1.26.4
+packaging==24.2
 pandas==2.2.2
 pillow==10.2.0
 python-dateutil==2.9.0.post0
