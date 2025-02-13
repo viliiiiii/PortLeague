@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Football-Data.org API Key
 FOOTBALL_API_KEY = "813c8cb1e58c43fd97b42f937b58622d"
