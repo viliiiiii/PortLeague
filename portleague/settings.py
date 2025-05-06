@@ -33,7 +33,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'your-default-secret-key-for-development')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['*']  # Update this with your Render domain when you have it
+ALLOWED_HOSTS = ['fyp-1-8wew.onrender.com', 'localhost', '127.0.0.1']  # Remove https:// and add local development hosts
 
 
 # Application definition
