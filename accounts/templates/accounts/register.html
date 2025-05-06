@@ -1,6 +1,139 @@
-<h2>Register</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Register</button>
-</form>
+{% extends "core/base.html" %}
+
+{% block title %}Register - PortLeague{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="register-box">
+        <h2>Create an Account</h2>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% if field.name == 'favorite_team' %}
+                        <p class="favorite-team-message" style="color: #bbb; margin-bottom: 0.5rem; font-size: 0.95em;">
+                            (Optional) Select your favorite team to personalize your experience.
+                        </p>
+                    {% endif %}
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="error-text">
+                            {{ field.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit">Register</button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="{% url 'login' %}">Login here</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .register-container {
+        max-width: 500px;
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    .register-box {
+        background: #333;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .register-box h2 {
+        color: #fff;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        color: #fff;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+        width: 100%;
+        padding: 8px;
+        background: #222;
+        border: 1px solid #444;
+        border-radius: 3px;
+        color: #fff;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        background: #0066cc;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #0055aa;
+    }
+
+    .login-link {
+        margin-top: 15px;
+        text-align: center;
+        color: #999;
+    }
+
+    .login-link a {
+        color: #0066cc;
+        text-decoration: none;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+
+    .message {
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 3px;
+        color: white;
+    }
+
+    .message.error {
+        background: #cc0000;
+    }
+
+    .message.success {
+        background: #009900;
+    }
+
+    .error-text {
+        color: #ff4444;
+        font-size: 0.9em;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}

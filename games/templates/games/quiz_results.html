@@ -1,0 +1,79 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Quiz Results - PortLeague{% endblock %}
+
+{% block content %}
+<div class="quiz-outer-wrapper">
+    <div class="quiz-container">
+        <div class="results-card">
+            <h1>Quiz Results</h1>
+            
+            <div class="score-display">
+                <div class="score-number">
+                    {{ correct_answers }}/{{ total_questions }}
+                </div>
+                <div class="score-label">Questions Correct</div>
+            </div>
+
+            <div class="button-section">
+                <a href="{% url 'games:quiz' %}" class="quiz-button">
+                    Try Another Quiz
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.quiz-outer-wrapper {
+    min-height: calc(100vh - 140px); /* Adjust for navbar and footer height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.quiz-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.results-card {
+    background: var(--bg-secondary);
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+}
+h1 {
+    color: var(--text-primary);
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+.score-display {
+    margin: 30px 0;
+}
+.score-number {
+    font-size: 48px;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin-bottom: 10px;
+}
+.score-label {
+    color: var(--text-secondary);
+}
+.quiz-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background: var(--accent-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+.quiz-button:hover {
+    background: var(--hover-color);
+}
+</style>
+{% endblock %} 

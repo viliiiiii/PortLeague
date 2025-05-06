@@ -1,30 +1,504 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h1>Match Prediction Polls</h1>
-<p>Vote for who you think will win upcoming matches!</p>
-
-<form id="pollForm">
-    <div class="poll">
-        <p><strong>Sporting CP vs FC Porto</strong></p>
-        <input type="radio" name="match1" value="Sporting"> Sporting CP <br>
-        <input type="radio" name="match1" value="Draw"> Draw <br>
-        <input type="radio" name="match1" value="Porto"> FC Porto <br>
+<div class="polls-container">
+    <div class="header">
+        <h1>Match Predictions</h1>
+        {% if user.is_authenticated %}
+        <div class="stats">
+            <span>Open Polls: {{ open_polls|length }}</span>
+            <span>Your Predictions: {{ user.pollvote_set.count }}</span>
+        </div>
+        {% endif %}
     </div>
 
-    <div class="poll">
-        <p><strong>SL Benfica vs Braga</strong></p>
-        <input type="radio" name="match2" value="Benfica"> SL Benfica <br>
-        <input type="radio" name="match2" value="Draw"> Draw <br>
-        <input type="radio" name="match2" value="Braga"> Braga <br>
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="tabs-container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('open')">
+                <span class="tab-text">Open</span>
+                <span class="tab-count">{{ open_polls|length }}</span>
+            </button>
+            <button class="tab-btn" onclick="showTab('completed')">
+                <span class="tab-text">Completed</span>
+                <span class="tab-count">{{ completed_polls|length }}</span>
+            </button>
+        </div>
     </div>
 
-    <button type="button" onclick="submitPoll()">Submit Vote</button>
-</form>
+    <!-- Open Polls -->
+    <div id="open-polls" class="tab-content active">
+        {% if open_polls or voted_polls %}
+            {% for poll in open_polls %}
+            <div class="poll-card">
+                <div class="match-info">
+                    <div class="date">{{ poll.match_date|date:"F j, Y - H:i" }}</div>
+                    <div class="teams">
+                        <div class="team home-team">
+                            <span>{{ poll.home_team }}</span>
+                        </div>
+                        <span class="vs">vs</span>
+                        <div class="team away-team">
+                            <span>{{ poll.away_team }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if user.is_authenticated %}
+                    <form method="post" class="vote-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="poll_id" value="{{ poll.id }}">
+                        <div class="vote-buttons">
+                            <button type="submit" name="prediction" value="HOME" class="btn home">
+                                {{ poll.home_team }} Win
+                            </button>
+                            <button type="submit" name="prediction" value="DRAW" class="btn draw">
+                                Draw
+                            </button>
+                            <button type="submit" name="prediction" value="AWAY" class="btn away">
+                                {{ poll.away_team }} Win
+                            </button>
+                        </div>
+                    </form>
+                {% else %}
+                    <div class="login-prompt">
+                        <p>Log in to make predictions</p>
+                        <a href="{% url 'login' %}" class="btn login">Login</a>
+                    </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            {% for poll in voted_polls %}
+            <div class="poll-card voted">
+                <div class="voted-badge" title="You've voted on this match">✓</div>
+                <div class="match-info">
+                    <div class="date">{{ poll.match_date|date:"F j, Y - H:i" }}</div>
+                    <div class="teams">
+                        <div class="team home-team">
+                            <span>{{ poll.home_team }}</span>
+                        </div>
+                        <span class="vs">vs</span>
+                        <div class="team away-team">
+                            <span>{{ poll.away_team }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="voted-info">
+                    <div class="your-vote">
+                        <span class="vote-label">Your Prediction:</span>
+                        <span class="prediction-value">
+                            {% if poll.user_vote == 'HOME' %}
+                                {{ poll.home_team }} Win
+                            {% elif poll.user_vote == 'AWAY' %}
+                                {{ poll.away_team }} Win
+                            {% else %}
+                                Draw
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-polls">No open polls available</p>
+        {% endif %}
+    </div>
+
+    <!-- Completed Polls -->
+    <div id="completed-polls" class="tab-content">
+        {% if completed_polls %}
+            {% for poll in completed_polls %}
+            <div class="poll-card {% if poll.user_has_voted %}voted{% endif %}">
+                {% if poll.user_has_voted %}
+                <div class="voted-badge {% if poll.user_vote == poll.correct_outcome %}correct{% else %}incorrect{% endif %}" 
+                     title="{% if poll.user_vote == poll.correct_outcome %}Correct prediction!{% else %}Incorrect prediction{% endif %}">
+                    {% if poll.user_vote == poll.correct_outcome %}✓{% else %}✗{% endif %}
+                </div>
+                {% endif %}
+                <div class="match-info">
+                    <div class="date">{{ poll.match_date|date:"F j, Y - H:i" }}</div>
+                    <div class="teams">
+                        <div class="team home-team">
+                            <span>{{ poll.home_team }}</span>
+                        </div>
+                        <span class="vs">vs</span>
+                        <div class="team away-team">
+                            <span>{{ poll.away_team }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="result-info">
+                    <div class="actual-result">
+                        <span class="result-label">Result:</span>
+                        <span class="result-value">
+                            {% if poll.correct_outcome == 'HOME' %}
+                                {{ poll.home_team }} Won
+                            {% elif poll.correct_outcome == 'AWAY' %}
+                                {{ poll.away_team }} Won
+                            {% else %}
+                                Match Drawn
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% if poll.user_has_voted %}
+                    <div class="your-vote">
+                        <span class="vote-label">Your Prediction:</span>
+                        <span class="vote-value {% if poll.user_vote == poll.correct_outcome %}correct{% else %}incorrect{% endif %}">
+                            {% if poll.user_vote == 'HOME' %}
+                                {{ poll.home_team }} Win
+                            {% elif poll.user_vote == 'AWAY' %}
+                                {{ poll.away_team }} Win
+                            {% else %}
+                                Draw
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-polls">No completed polls</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .polls-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .header {
+        margin-bottom: 30px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .header h1 {
+        margin-bottom: 10px;
+        font-size: 2.5em;
+        color: var(--text-primary);
+        text-align: center;
+        width: 100%;
+    }
+
+    .stats {
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+    }
+
+    .stats span {
+        margin: 0 10px;
+    }
+
+    .tabs-container {
+        margin-bottom: 40px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .tabs {
+        max-width: 500px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .tab-btn {
+        position: relative;
+        padding: 15px 30px;
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .tab-btn:hover {
+        color: var(--accent-color);
+    }
+
+    .tab-btn.active {
+        color: var(--accent-color);
+    }
+
+    .tab-btn::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--accent-color);
+        transform: scaleX(0);
+        transition: transform 0.2s ease;
+        border-radius: 3px 3px 0 0;
+    }
+
+    .tab-btn.active::after {
+        transform: scaleX(1);
+    }
+
+    .tab-count {
+        background: var(--bg-tertiary);
+        color: var(--text-secondary);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 14px;
+        min-width: 24px;
+        text-align: center;
+        transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover .tab-count,
+    .tab-btn.active .tab-count {
+        background: var(--accent-color);
+        color: var(--bg-primary);
+    }
+
+    .tab-content {
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .poll-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        position: relative;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .poll-card.voted {
+        border-color: var(--accent-color);
+    }
+
+    .voted-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: var(--accent-color);
+        color: var(--bg-primary);
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .voted-badge.correct {
+        background: var(--success-color);
+    }
+
+    .voted-badge.incorrect {
+        background: var(--error-color);
+    }
+
+    .match-info {
+        margin-bottom: 20px;
+    }
+
+    .date {
+        color: var(--text-secondary);
+        font-size: 0.9em;
+        margin-bottom: 10px;
+    }
+
+    .teams {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        color: var(--text-primary);
+    }
+
+    .team {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+    }
+
+    .home-team {
+        justify-content: flex-end;
+    }
+
+    .away-team {
+        justify-content: flex-start;
+    }
+
+    .team-badge {
+        width: 30px;
+        height: 30px;
+        object-fit: contain;
+    }
+
+    .vs {
+        color: var(--text-secondary);
+        font-weight: bold;
+        flex: 0 0 auto;
+    }
+
+    .vote-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    .btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.2s ease;
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+    }
+
+    .btn:hover {
+        background: var(--hover-color);
+        color: var(--bg-primary);
+    }
+
+    .btn.login {
+        background: var(--accent-color);
+        color: var(--bg-primary);
+    }
+
+    .voted-info, .result-info {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .vote-label, .result-label {
+        color: var(--text-secondary);
+        margin-right: 10px;
+    }
+
+    .prediction-value, .result-value {
+        color: var(--text-primary);
+        font-weight: bold;
+    }
+
+    .vote-value {
+        font-weight: bold;
+    }
+
+    .vote-value.correct {
+        color: var(--success-color);
+    }
+
+    .vote-value.incorrect {
+        color: var(--error-color);
+    }
+
+    .login-prompt {
+        text-align: center;
+        margin-top: 15px;
+        color: var(--text-secondary);
+    }
+
+    .no-polls {
+        text-align: center;
+        color: var(--text-secondary);
+        padding: 20px;
+    }
+
+    .message {
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        text-align: center;
+        color: var(--bg-primary);
+    }
+
+    .message.success {
+        background: var(--success-color);
+    }
+
+    .message.error {
+        background: var(--error-color);
+    }
+
+    @media (max-width: 768px) {
+        .teams {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .vs {
+            margin: 10px 0;
+        }
+
+        .vote-buttons {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
 
 <script>
-function submitPoll() {
-    alert("Vote submitted! Live results will be added soon.");
+function showTab(tabName, event) {
+    // Update buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.textContent.toLowerCase().includes(tabName)) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    // Update content
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.getElementById(tabName + '-polls').classList.add('active');
 }
 </script>
 {% endblock %}
+

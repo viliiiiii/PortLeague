@@ -1,0 +1,145 @@
+{% extends "core/base.html" %}
+
+{% block title %}Login - PortLeague{% endblock %}
+
+{% block content %}
+<style>
+    .login-container {
+        min-height: calc(100vh - 170px); /* Account for navbar and footer */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+    }
+
+    .login-box {
+        background-color: var(--bg-secondary);
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .login-title {
+        color: var(--text-primary);
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-label {
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .form-input {
+        background-color: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        color: var(--text-primary);
+        padding: 0.75rem;
+        width: 100%;
+    }
+
+    .form-input:focus {
+        border-color: var(--accent-color);
+        outline: none;
+    }
+
+    .login-button {
+        background-color: var(--accent-color);
+        border: none;
+        border-radius: 4px;
+        color: var(--bg-primary);
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 0.75rem;
+        transition: background-color 0.2s;
+        width: 100%;
+    }
+
+    .login-button:hover {
+        background-color: var(--hover-color);
+    }
+
+    .register-link {
+        color: var(--text-secondary);
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    .register-link a {
+        color: var(--accent-color);
+        text-decoration: none;
+    }
+
+    .register-link a:hover {
+        text-decoration: underline;
+    }
+
+    .error-message {
+        background-color: var(--error-color);
+        border-radius: 4px;
+        color: white;
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        text-align: center;
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-box">
+        <h2 class="login-title">Login</h2>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{% if message.tags == 'error' %}error-message{% else %}success-message{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div class="error-message">
+                    Invalid username or password.
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" name="username" id="username" required class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" name="password" id="password" required class="form-input">
+            </div>
+
+            <button type="submit" class="login-button">Login</button>
+        </form>
+
+        <div class="register-link">
+            <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,89 +1,410 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h1>{{ team.name }}</h1>
+<div class="team-details">
+    <!-- Team Header -->
+    <div class="team-header">
+        <div class="team-info">
+            <div class="team-basics">
+                <h1>{{ team.name }}</h1>
+                <div class="team-meta">
+                    <div class="meta-item">
+                        <span class="label">Founded</span>
+                        <span class="value">{{ team.founded }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="label">Venue</span>
+                        <span class="value">{{ team.venue }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="label">Coach</span>
+                        <span class="value">{{ team.coach.name }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- Team Logo -->
-<img src="{{ team.crest }}" alt="{{ team.name }} Logo" style="width: 100px; height: 100px;">
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+        <!-- Matches Section -->
+        <div class="matches-section">
+            <!-- Recent Matches -->
+            <div class="card">
+                <h2>Recent Matches</h2>
+                <div class="matches-list">
+                    {% for match in recent_matches %}
+                    <div class="match-card">
+                        <div class="match-date">{{ match.formatted_date }}</div>
+                        <div class="match-teams">
+                            {% if match.homeTeam.id == team.id %}
+                                <div class="team home">
+                                    <span>{{ team.name }}</span>
+                                </div>
+                                <div class="score">
+                                    {% if match.score.fullTime.home is not None and match.score.fullTime.away is not None %}
+                                        {{ match.score.fullTime.home }} - {{ match.score.fullTime.away }}
+                                    {% else %}
+                                        vs
+                                    {% endif %}
+                                </div>
+                                <div class="team away">
+                                    <span>{{ match.awayTeam.name }}</span>
+                                </div>
+                            {% else %}
+                                <div class="team home">
+                                    <span>{{ match.homeTeam.name }}</span>
+                                </div>
+                                <div class="score">
+                                    {% if match.score.fullTime.home is not None and match.score.fullTime.away is not None %}
+                                        {{ match.score.fullTime.home }} - {{ match.score.fullTime.away }}
+                                    {% else %}
+                                        vs
+                                    {% endif %}
+                                </div>
+                                <div class="team away">
+                                    <span>{{ team.name }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="no-data">No recent matches found.</div>
+                    {% endfor %}
+                </div>
+            </div>
 
-<!-- Team Information -->
-<p><strong>Founded:</strong> {{ team.founded }}</p>
-<p><strong>Venue:</strong> {{ team.venue }}</p>
-<p><strong>Coach:</strong> {{ team.coach.name }}</p>
+            <!-- Upcoming Matches -->
+            <div class="card">
+                <h2>Upcoming Matches</h2>
+                <div class="matches-list">
+                    {% for match in upcoming_matches %}
+                    <div class="match-card">
+                        <div class="match-date">{{ match.formatted_date }}</div>
+                        <div class="match-teams">
+                            {% if match.homeTeam.id == team.id %}
+                                <div class="team home">
+                                    <span>{{ team.name }}</span>
+                                </div>
+                                <div class="score">
+                                    <span>vs</span>
+                                </div>
+                                <div class="team away">
+                                    <span>{{ match.awayTeam.name }}</span>
+                                </div>
+                            {% else %}
+                                <div class="team home">
+                                    <span>{{ match.homeTeam.name }}</span>
+                                </div>
+                                <div class="score">
+                                    <span>vs</span>
+                                </div>
+                                <div class="team away">
+                                    <span>{{ team.name }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="no-data">No upcoming matches found.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
 
-<!-- Recent Matches -->
-<h2>Recent Matches</h2>
-<table>
-    <tr>
-        <th>Date</th>
-        <th>Opponent</th>
-        <th>Score</th>
-    </tr>
-    {% for match in recent_matches %}
-    <tr>
-        <td>{{ match.formatted_date }}</td>
-        <td>
-            {% if match.homeTeam.id == team.id %}
-                vs {{ match.awayTeam.name }} (H)
-            {% else %}
-                vs {{ match.homeTeam.name }} (A)
-            {% endif %}
-        </td>
-        <td>
-            {% if match.score.fullTime.home is not None and match.score.fullTime.away is not None %}
-                {{ match.score.fullTime.home }} - {{ match.score.fullTime.away }}
-            {% else %}
-                TBD
-            {% endif %}
-        </td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="3">No recent matches found.</td></tr>
-    {% endfor %}
-</table>
+        <!-- Squad Section -->
+        <div class="squad-section">
+            <div class="card">
+                <h2>Squad</h2>
+                <div class="squad-list">
+                    <div class="position-group">
+                        <h3>Goalkeepers</h3>
+                        {% for player in squad %}
+                            {% if player.position == 'Goalkeeper' %}
+                            <div class="player-card">
+                                <div class="player-info">
+                                    <span class="player-name">{{ player.name }}</span>
+                                    <span class="player-number">{{ player.shirtNumber|default:'' }}</span>
+                                </div>
+                                <div class="player-meta">
+                                    <span class="age">{{ player.age }} years</span>
+                                    <span class="nationality">{{ player.nationality }}</span>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
 
-<!-- Upcoming Matches -->
-<h2>Upcoming Matches</h2>
-<table>
-    <tr>
-        <th>Date</th>
-        <th>Opponent</th>
-    </tr>
-    {% for match in upcoming_matches %}
-    <tr>
-        <td>{{ match.formatted_date }}</td>
-        <td>
-            {% if match.homeTeam.id == team.id %}
-                vs {{ match.awayTeam.name }} (H)
-            {% else %}
-                vs {{ match.homeTeam.name }} (A)
-            {% endif %}
-        </td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="2">No upcoming matches found.</td></tr>
-    {% endfor %}
-</table>
+                    <div class="position-group">
+                        <h3>Defence</h3>
+                        {% for player in squad %}
+                            {% if player.position == 'Defence' or player.position == 'Left-Back' or player.position == 'Centre-Back' or player.position == 'Right-Back' or player.position == 'Defender' %}
+                            <div class="player-card">
+                                <div class="player-info">
+                                    <span class="player-name">{{ player.name }}</span>
+                                    <span class="player-number">{{ player.shirtNumber|default:'' }}</span>
+                                </div>
+                                <div class="player-meta">
+                                    <span class="age">{{ player.age }} years</span>
+                                    <span class="nationality">{{ player.nationality }}</span>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
 
-<!-- Squad List -->
-<h2>Squad List</h2>
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Position</th>
-        <th>Age</th>
-        <th>Nationality</th>
-    </tr>
-    {% for player in squad %}
-    <tr>
-        <td>{{ player.name }}</td>
-        <td>{{ player.position }}</td>
-        <td>{{ player.age }}</td>
-        <td>{{ player.nationality }}</td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="4">No squad information available.</td></tr>
-    {% endfor %}
-</table>
+                    <div class="position-group">
+                        <h3>Midfield</h3>
+                        {% for player in squad %}
+                            {% if player.position == 'Midfield' or player.position == 'Defensive Midfield' or player.position == 'Central Midfield' or player.position == 'Midfielder' %}
+                            <div class="player-card">
+                                <div class="player-info">
+                                    <span class="player-name">{{ player.name }}</span>
+                                    <span class="player-number">{{ player.shirtNumber|default:'' }}</span>
+                                </div>
+                                <div class="player-meta">
+                                    <span class="age">{{ player.age }} years</span>
+                                    <span class="nationality">{{ player.nationality }}</span>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
 
+                    <div class="position-group">
+                        <h3>Offence</h3>
+                        {% for player in squad %}
+                            {% if player.position == 'Offence' or player.position == 'Right Winger' or player.position == 'Left Winger' or player.position == 'Forward' or player.position == 'Attacker' %}
+                            <div class="player-card">
+                                <div class="player-info">
+                                    <span class="player-name">{{ player.name }}</span>
+                                    <span class="player-number">{{ player.shirtNumber|default:'' }}</span>
+                                </div>
+                                <div class="player-meta">
+                                    <span class="age">{{ player.age }} years</span>
+                                    <span class="nationality">{{ player.nationality }}</span>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.team-details {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.team-header {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.team-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.team-crest {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+}
+
+.team-basics h1 {
+    font-size: 32px;
+    margin-bottom: 15px;
+    color: var(--text-primary);
+}
+
+.team-meta {
+    display: flex;
+    gap: 20px;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.meta-item .label {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.meta-item .value {
+    font-size: 16px;
+    color: var(--text-primary);
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.card {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.card h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: var(--accent-color);
+}
+
+.card h3 {
+    font-size: 18px;
+    margin: 15px 0;
+    color: var(--text-secondary);
+}
+
+.matches-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.match-card {
+    background: var(--bg-tertiary);
+    border-radius: 6px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.match-date {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.match-teams {
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr;
+    align-items: center;
+    gap: 10px;
+}
+
+.team {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-primary);
+}
+
+.team.home {
+    justify-content: flex-end;
+}
+
+.team.away {
+    justify-content: flex-start;
+}
+
+.team-badge {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.score {
+    text-align: center;
+    font-weight: bold;
+    color: var(--accent-color);
+    min-width: 60px;
+}
+
+.squad-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.position-group {
+    margin-bottom: 20px;
+}
+
+.player-card {
+    background: var(--bg-tertiary);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.player-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    color: var(--text-primary);
+}
+
+.player-name {
+    font-weight: bold;
+}
+
+.player-number {
+    color: var(--accent-color);
+}
+
+.player-meta {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.no-data {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 20px;
+}
+
+@media (max-width: 768px) {
+    .team-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .team-meta {
+        justify-content: center;
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .match-teams {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .team {
+        justify-content: center;
+    }
+
+    .team.home, .team.away {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .score {
+        margin: 10px 0;
+    }
+}
+</style>
 {% endblock %}

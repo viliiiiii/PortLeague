@@ -1,106 +1,327 @@
 {% extends 'core/base.html' %}
+{% load standings_filters %}
 
 {% block content %}
 
-<h1>Primeira Liga - Standings</h1>
+<div class="standings-container">
+    <h1> Standings</h1>
 
-<!-- Season Dropdown -->
-<form method="get">
-    <label for="season">Select Season:</label>
-    <select name="season" id="season" onchange="this.form.submit()">
-        <option value="2024" {% if selected_season == "2024" %}selected{% endif %}>2024</option>
-        <option value="2023" {% if selected_season == "2023" %}selected{% endif %}>2023</option>
-        <option value="2022" {% if selected_season == "2022" %}selected{% endif %}>2022</option>
-    </select>
-</form>
+    <!-- Search and Filter Section -->
+    <div class="filter-section">
+        <form method="get" class="filter-form">
+            <div class="search-box">
+                <input type="text" name="search" placeholder="Search by team name..." value="{{ request.GET.search }}">
+            </div>
+            
+            <div class="filter-options">
+                <!-- Season Dropdown -->
+                <select name="season" class="filter-select">
+                    <option value="2024" {% if selected_season == "2024" %}selected{% endif %}>2024</option>
+                    <option value="2023" {% if selected_season == "2023" %}selected{% endif %}>2023</option>
 
-<!-- Filter Buttons -->
-<div class="filters">
-    <a href="?type=TOTAL{% if selected_season %}&season={{ selected_season }}{% endif %}" class="filter {% if standings_type == 'TOTAL' %}active{% endif %}">Total</a>
-    <a href="?type=HOME{% if selected_season %}&season={{ selected_season }}{% endif %}" class="filter {% if standings_type == 'HOME' %}active{% endif %}">Home</a>
-    <a href="?type=AWAY{% if selected_season %}&season={{ selected_season }}{% endif %}" class="filter {% if standings_type == 'AWAY' %}active{% endif %}">Away</a>
+                </select>
+
+                <!-- Points Range Filter -->
+                <div class="range-filter">
+                    <input type="number" name="min_points" class="points-input" placeholder="Min Points" value="{{ request.GET.min_points }}" min="0">
+                    <span>-</span>
+                    <input type="number" name="max_points" class="points-input" placeholder="Max Points" value="{{ request.GET.max_points }}" min="0">
+                </div>
+
+                <!-- Position Range Filter -->
+                <div class="range-filter">
+                    <input type="number" name="min_position" class="position-input" placeholder="Min Position" value="{{ request.GET.min_position }}" min="1" max="20">
+                    <span>-</span>
+                    <input type="number" name="max_position" class="position-input" placeholder="Max Position" value="{{ request.GET.max_position }}" min="1" max="20">
+                </div>
+
+                <input type="hidden" name="type" value="{{ standings_type }}">
+                <button type="submit" class="filter-button">Apply Filters</button>
+                <a href="?type={{ standings_type }}" class="clear-button">Clear Filters</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- View Type Filters -->
+    <div class="view-filters">
+        <div class="filter-buttons">
+            <a href="{% preserve_filters_url 'TOTAL' %}" class="filter {% if standings_type == 'TOTAL' %}active{% endif %}">Total</a>
+            <a href="{% preserve_filters_url 'HOME' %}" class="filter {% if standings_type == 'HOME' %}active{% endif %}">Home</a>
+            <a href="{% preserve_filters_url 'AWAY' %}" class="filter {% if standings_type == 'AWAY' %}active{% endif %}">Away</a>
+        </div>
+    </div>
+
+    <!-- After the view-filters div and before the table -->
+    {% if error %}
+    <div class="error-message">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <!-- Standings Table -->
+    <div class="table-container">
+        <table>
+            <tr>
+                <th>Pos</th>
+                <th>Team</th>
+                <th>Matches</th>
+                <th>Points</th>
+                <th>+/-</th>
+                <th>Goals</th>
+            </tr>
+            {% for team in standings %}
+            <tr>
+                <td>{{ team.position }}</td>
+                <td>
+                    <a href="{% url 'standings:team_details' team.team.id %}" class="team-link">
+                        {{ team.team.name }}
+                    </a>
+                </td>
+                <td>{{ team.playedGames }}</td>
+                <td>{{ team.points }}</td>
+                <td>{{ team.goalDifference }}</td>
+                <td>{{ team.goalsFor }}:{{ team.goalsAgainst }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No teams found matching your criteria.</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </div>
 
-<!-- Standings Table -->
-<table>
-    <tr>
-        <th>Pos</th>
-        <th>Team</th>
-        <th>Matches</th>
-        <th>Points</th>
-        <th>+/-</th>
-        <th>Goals</th>
-    </tr>
-    {% for team in standings %}
-    <tr>
-        <td>{{ team.position }}</td>
-        <td>
-            <a href="{% url 'standings:team_details' team.team.id %}" style="color: #ffcc00;">
-                <img src="{{ team.team.crest }}" alt="Logo"> {{ team.team.name }}
-            </a>
-        </td>
-        <td>{{ team.playedGames }}</td>
-        <td>{{ team.points }}</td>
-        <td>{{ team.goalDifference }}</td>
-        <td>{{ team.goalsFor }}:{{ team.goalsAgainst }}</td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="6">No standings available.</td>
-    </tr>
-    {% endfor %}
-</table>
-
 <style>
-    body {
-        font-family: Arial, sans-serif;
+    .standings-container {
+        max-width: 90%;
+        margin: 0 auto;
         text-align: center;
-        background-color: #181818;
-        color: #fff;
     }
-    table {
-        width: 80%;
+
+    h1 {
+        color: var(--text-primary);
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    
+    /* Filter Section Styles */
+    .filter-section {
+        max-width: 90%;
         margin: 20px auto;
-        border-collapse: collapse;
-        background: #222;
-        color: #fff;
-        font-size: 16px;
+        padding: 20px;
+        background: var(--bg-secondary);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border: 1px solid var(--border-color);
     }
-    th, td {
+    
+    .filter-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .search-box {
+        width: 100%;
+    }
+    
+    .search-box input {
+        width: 100%;
         padding: 10px;
-        border-bottom: 1px solid #444;
-        text-align: left;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
     }
-    th {
-        background: #333;
+    
+    .filter-options {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
     }
-    tr:hover {
-        background: #333;
+    
+    .filter-select {
+        padding: 8px;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        min-width: 120px;
     }
-    img {
-        width: 25px;
-        height: 25px;
-        vertical-align: middle;
-        margin-right: 10px;
+    
+    .range-filter {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--text-primary);
     }
-    .filters {
-        margin: 20px;
+    
+    .points-input, .position-input {
+        width: 80px;
+        padding: 8px;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
     }
+    
+    .filter-button, .clear-button {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.2s ease;
+    }
+    
+    .filter-button {
+        background: var(--accent-color);
+        color: #000000;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.2s ease;
+    }
+
+    [data-theme="dark"] .filter-button {
+        color: #ffffff;
+    }
+
+    .filter-button:hover {
+        background: var(--hover-color);
+        color: var(--bg-primary);
+    }
+    
+    .clear-button {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        text-decoration: none;
+        border: 1px solid var(--border-color);
+    }
+    
+    .filter-button:hover {
+        background: var(--hover-color);
+        color: var(--bg-primary);
+    }
+    
+    .clear-button:hover {
+        background: var(--hover-color);
+        color: var(--bg-primary);
+        border-color: var(--hover-color);
+    }
+    
+    /* View Type Filters */
+    .view-filters {
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    .filter-buttons {
+        display: inline-flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    
     .filter {
         padding: 10px 15px;
-        background: #444;
-        color: #fff;
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
         text-decoration: none;
         border-radius: 5px;
+        margin: 0 5px;
         transition: 0.3s;
+        border: 1px solid var(--border-color);
     }
-    .filter:hover {
-        background: #ffcc00;
-        color: #000;
+    
+    .filter:hover, .filter.active {
+        background: var(--accent-color);
+        color: var(--bg-primary);
+        border-color: var(--hover-color);
     }
-    .filter.active {
-        background: #ffcc00;
-        color: #000;
+
+    /* Table Styles */
+    .table-container {
+        max-width: 90%;
+        margin: 0 auto;
+        background: var(--bg-secondary);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border: 1px solid var(--border-color);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 auto;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+        font-weight: bold;
+        background: var(--bg-tertiary);
+    }
+
+    tr:hover {
+        background: var(--bg-tertiary);
+    }
+
+    .team-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-primary);
+        text-decoration: none;
+    }
+
+    .team-link:hover {
+        color: var(--text-accent);
+    }
+
+    .team-link img {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+    }
+
+    .error-message {
+        color: var(--error-color);
+        background: var(--bg-secondary);
+        padding: 10px;
+        border-radius: 5px;
+        margin: 10px auto;
+        max-width: 90%;
+    }
+
+    @media (max-width: 768px) {
+        .filter-options {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .range-filter {
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        table {
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 8px;
+        }
     }
 </style>
 

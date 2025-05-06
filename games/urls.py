@@ -1,9 +1,9 @@
 from django.urls import path
-from .views import quiz, prediction_polls
+from . import views
 
 app_name = "games"
 
 urlpatterns = [
-    path("quiz/", quiz, name="quiz"),
-    path("polls/", prediction_polls, name="prediction_polls"),
+    path("quiz/", views.quiz, name="quiz"),  # Quiz selection page
+    path("predictions/", views.prediction_polls, name="prediction_polls"),
 ]

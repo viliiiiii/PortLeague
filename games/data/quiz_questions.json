@@ -1,0 +1,516 @@
+{
+    "regular": {
+        "set1": [
+            {
+                "question": "Who has won the most Primeira Liga titles?",
+                "choices": [
+                    "FC Porto",
+                    "Sporting CP",
+                    "Braga",
+                    "Benfica"
+                ],
+                "answer": "Benfica"
+            },
+            {
+                "question": "What club is nicknamed 'The Lions'?",
+                "choices": [
+                    "Boavista",
+                    "Sporting CP",
+                    "Mar\u00edtimo",
+                    "Benfica"
+                ],
+                "answer": "Sporting CP"
+            },
+            {
+                "question": "Who was the Primeira Liga top scorer in the 2022\u201323 season?",
+                "choices": [
+                    "Mehdi Taremi",
+                    "Jo\u00e3o M\u00e1rio",
+                    "Evanilson",
+                    "Paulinho"
+                ],
+                "answer": "Mehdi Taremi"
+            },
+            {
+                "question": "Which team plays at Est\u00e1dio do Drag\u00e3o?",
+                "choices": [
+                    "Benfica",
+                    "Sporting CP",
+                    "FC Porto",
+                    "Vit\u00f3ria SC"
+                ],
+                "answer": "FC Porto"
+            },
+            {
+                "question": "What are the club colors of Benfica?",
+                "choices": [
+                    "Green and White",
+                    "Red and White",
+                    "Blue and White",
+                    "Yellow and Black"
+                ],
+                "answer": "Red and White"
+            },
+            {
+                "question": "When did the Primeira Liga begin?",
+                "choices": [
+                    "1920",
+                    "1934",
+                    "1946",
+                    "1951"
+                ],
+                "answer": "1934"
+            },
+            {
+                "question": "Who won the Primeira Liga in the 2020\u201321 season?",
+                "choices": [
+                    "Benfica",
+                    "FC Porto",
+                    "Sporting CP",
+                    "Braga"
+                ],
+                "answer": "Sporting CP"
+            },
+            {
+                "question": "Which club has the stadium closest to the ocean?",
+                "choices": [
+                    "Mar\u00edtimo",
+                    "Arouca",
+                    "Vizela",
+                    "Casa Pia"
+                ],
+                "answer": "Mar\u00edtimo"
+            },
+            {
+                "question": "Which former Sporting CP player became a Ballon d\u2019Or winner?",
+                "choices": [
+                    "Jo\u00e3o Moutinho",
+                    "Nani",
+                    "Cristiano Ronaldo",
+                    "Bruno Fernandes"
+                ],
+                "answer": "Cristiano Ronaldo"
+            },
+            {
+                "question": "What animal is on the crest of FC Porto?",
+                "choices": [
+                    "Eagle",
+                    "Lion",
+                    "Dragon",
+                    "Falcon"
+                ],
+                "answer": "Dragon"
+            }
+        ],
+        "set2": [
+            {
+                "question": "Which club is based in Braga?",
+                "choices": [
+                    "Benfica",
+                    "Sporting CP",
+                    "FC Porto",
+                    "SC Braga"
+                ],
+                "answer": "SC Braga"
+            },
+            {
+                "question": "Which Portuguese team is nicknamed 'Os Encarnados'?",
+                "choices": [
+                    "FC Porto",
+                    "Sporting CP",
+                    "Benfica",
+                    "Boavista"
+                ],
+                "answer": "Benfica"
+            },
+            {
+                "question": "Who was Sporting CP\u2019s head coach when they won the 2020\u201321 league title?",
+                "choices": [
+                    "Silas",
+                    "R\u00faben Amorim",
+                    "Marcel Keizer",
+                    "Jorge Jesus"
+                ],
+                "answer": "R\u00faben Amorim"
+            },
+            {
+                "question": "Which player scored the winning goal in the 2004 Champions League final for FC Porto?",
+                "choices": [
+                    "Benni McCarthy",
+                    "Carlos Alberto",
+                    "Maniche",
+                    "Derlei"
+                ],
+                "answer": "Carlos Alberto"
+            },
+            {
+                "question": "What are the home colors of FC Porto?",
+                "choices": [
+                    "Green and White",
+                    "Red and White",
+                    "Blue and White",
+                    "Black and Yellow"
+                ],
+                "answer": "Blue and White"
+            },
+            {
+                "question": "Which club's stadium is Est\u00e1dio Municipal de Braga?",
+                "choices": [
+                    "Vit\u00f3ria SC",
+                    "SC Braga",
+                    "Boavista",
+                    "Rio Ave"
+                ],
+                "answer": "SC Braga"
+            },
+            {
+                "question": "What does 'Liga NOS' refer to?",
+                "choices": [
+                    "Portuguese Cup",
+                    "Portuguese League",
+                    "Top-flight football league in Portugal",
+                    "UEFA competition"
+                ],
+                "answer": "Top-flight football league in Portugal"
+            },
+            {
+                "question": "Which club has the nickname 'Os Axadrezados' (The Chequered Ones)?",
+                "choices": [
+                    "Boavista",
+                    "Portimonense",
+                    "Gil Vicente",
+                    "Vizela"
+                ],
+                "answer": "Boavista"
+            },
+            {
+                "question": "Which city is home to both Benfica and Sporting CP?",
+                "choices": [
+                    "Porto",
+                    "Braga",
+                    "Lisbon",
+                    "Coimbra"
+                ],
+                "answer": "Lisbon"
+            },
+            {
+                "question": "Which team did Jo\u00e3o F\u00e9lix play for before moving to Atl\u00e9tico Madrid?",
+                "choices": [
+                    "Sporting CP",
+                    "Braga",
+                    "Benfica",
+                    "FC Porto"
+                ],
+                "answer": "Benfica"
+            }
+        ],
+        "set3": [
+            {
+                "question": "Which player was known for wearing the number 8 shirt at Benfica and later moved to Fulham?",
+                "choices": [
+                    "Andr\u00e9 Gomes",
+                    "Renato Sanches",
+                    "Jo\u00e3o M\u00e1rio",
+                    "Andr\u00e9 Almeida"
+                ],
+                "answer": "Jo\u00e3o M\u00e1rio"
+            },
+            {
+                "question": "Which club did Ricardo Quaresma play for after returning from Turkey?",
+                "choices": [
+                    "FC Porto",
+                    "Vit\u00f3ria SC",
+                    "Boavista",
+                    "Sporting CP"
+                ],
+                "answer": "Vit\u00f3ria SC"
+            },
+            {
+                "question": "Which of these teams has NEVER won the Primeira Liga?",
+                "choices": [
+                    "Boavista",
+                    "Braga",
+                    "Benfica",
+                    "Sporting CP"
+                ],
+                "answer": "Braga"
+            },
+            {
+                "question": "Which Primeira Liga club is based on Madeira island?",
+                "choices": [
+                    "Vizela",
+                    "Chaves",
+                    "Mar\u00edtimo",
+                    "Arouca"
+                ],
+                "answer": "Mar\u00edtimo"
+            },
+            {
+                "question": "What club did Bruno Fernandes play for before moving to Manchester United?",
+                "choices": [
+                    "Benfica",
+                    "FC Porto",
+                    "Sporting CP",
+                    "Braga"
+                ],
+                "answer": "Sporting CP"
+            },
+            {
+                "question": "Which club returned to the top flight in 2022\u201323 after being relegated in 2020\u201321?",
+                "choices": [
+                    "Estoril",
+                    "Chaves",
+                    "Casa Pia",
+                    "Nacional"
+                ],
+                "answer": "Chaves"
+            },
+            {
+                "question": "Which player moved from Benfica to Liverpool in 2022?",
+                "choices": [
+                    "Jo\u00e3o F\u00e9lix",
+                    "Darwin N\u00fa\u00f1ez",
+                    "Pizzi",
+                    "Rafa Silva"
+                ],
+                "answer": "Darwin N\u00fa\u00f1ez"
+            },
+            {
+                "question": "Which club uses Est\u00e1dio do Bessa as their home ground?",
+                "choices": [
+                    "Portimonense",
+                    "Boavista",
+                    "Gil Vicente",
+                    "Moreirense"
+                ],
+                "answer": "Boavista"
+            },
+            {
+                "question": "Which club is also known as 'Os Verde-Rubros'?",
+                "choices": [
+                    "Mar\u00edtimo",
+                    "Sporting CP",
+                    "Moreirense",
+                    "Rio Ave"
+                ],
+                "answer": "Mar\u00edtimo"
+            },
+            {
+                "question": "Who was the youngest scorer in Liga NOS history as of 2023?",
+                "choices": [
+                    "Jo\u00e3o Neves",
+                    "Cher Ndour",
+                    "Rodrigo Ribeiro",
+                    "F\u00e1bio Silva"
+                ],
+                "answer": "F\u00e1bio Silva"
+            }
+        ]
+    },
+    "hard": {
+        "set1": [
+            {
+                "question": "Which club has the nickname 'Os C\u00f3negos'?",
+                "choices": [
+                    "Moreirense",
+                    "Mar\u00edtimo",
+                    "Vizela",
+                    "Casa Pia"
+                ],
+                "answer": "Moreirense"
+            },
+            {
+                "question": "Which stadium is nicknamed 'A Pedreira'?",
+                "choices": [
+                    "Est\u00e1dio do Bessa",
+                    "Est\u00e1dio Municipal de Braga",
+                    "Est\u00e1dio do Drag\u00e3o",
+                    "Est\u00e1dio da Luz"
+                ],
+                "answer": "Est\u00e1dio Municipal de Braga"
+            },
+            {
+                "question": "Which team had the best defensive record in 2021\u201322?",
+                "choices": [
+                    "Benfica",
+                    "Sporting CP",
+                    "FC Porto",
+                    "Braga"
+                ],
+                "answer": "FC Porto"
+            },
+            {
+                "question": "Who is the all-time top scorer of the Portuguese Primeira Liga?",
+                "choices": [
+                    "Cristiano Ronaldo",
+                    "Eus\u00e9bio",
+                    "Fernando Peyroteo",
+                    "M\u00e1rio Jardel"
+                ],
+                "answer": "Fernando Peyroteo"
+            },
+            {
+                "question": "Which manager led Benfica to the 2013\u201314 treble?",
+                "choices": [
+                    "Jorge Jesus",
+                    "Rui Vit\u00f3ria",
+                    "Fernando Santos",
+                    "Ronald Koeman"
+                ],
+                "answer": "Jorge Jesus"
+            },
+            {
+                "question": "What is the name of the top tier of Portuguese football as of 2024?",
+                "choices": [
+                    "Liga NOS",
+                    "Liga Portugal Bwin",
+                    "Liga ZON Sagres",
+                    "Liga Betclic"
+                ],
+                "answer": "Liga Betclic"
+            },
+            {
+                "question": "Which player made over 600 appearances for FC Porto?",
+                "choices": [
+                    "Deco",
+                    "Hulk",
+                    "Jo\u00e3o Pinto",
+                    "V\u00edtor Ba\u00eda"
+                ],
+                "answer": "Jo\u00e3o Pinto"
+            },
+            {
+                "question": "Which Portuguese club did Deco play for before joining FC Porto?",
+                "choices": [
+                    "Boavista",
+                    "Salgueiros",
+                    "Benfica",
+                    "Alverca"
+                ],
+                "answer": "Alverca"
+            },
+            {
+                "question": "Which city is home to Gil Vicente?",
+                "choices": [
+                    "Lisbon",
+                    "Barcelos",
+                    "Guimar\u00e3es",
+                    "Coimbra"
+                ],
+                "answer": "Barcelos"
+            },
+            {
+                "question": "Which club finished third in the Primeira Liga 2022\u201323 season?",
+                "choices": [
+                    "Sporting CP",
+                    "Vit\u00f3ria SC",
+                    "Braga",
+                    "Estoril"
+                ],
+                "answer": "Braga"
+            }
+        ],
+        "set2": [
+            {
+                "question": "How many Primeira Liga titles did FC Porto win under Jos\u00e9 Mourinho?",
+                "choices": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "answer": "2"
+            },
+            {
+                "question": "Which team won the Primeira Liga in 1999\u20132000?",
+                "choices": [
+                    "Benfica",
+                    "Boavista",
+                    "Sporting CP",
+                    "FC Porto"
+                ],
+                "answer": "Sporting CP"
+            },
+            {
+                "question": "Which Portuguese club's mascot is a dragon?",
+                "choices": [
+                    "Sporting CP",
+                    "Boavista",
+                    "FC Porto",
+                    "Benfica"
+                ],
+                "answer": "FC Porto"
+            },
+            {
+                "question": "Who is Benfica\u2019s all-time top scorer?",
+                "choices": [
+                    "\u00d3scar Cardozo",
+                    "Eus\u00e9bio",
+                    "Nuno Gomes",
+                    "Jo\u00e3o Pinto"
+                ],
+                "answer": "Eus\u00e9bio"
+            },
+            {
+                "question": "Which club plays at Est\u00e1dio Capital do M\u00f3vel?",
+                "choices": [
+                    "Pa\u00e7os de Ferreira",
+                    "Arouca",
+                    "Chaves",
+                    "Casa Pia"
+                ],
+                "answer": "Pa\u00e7os de Ferreira"
+            },
+            {
+                "question": "Which club has green and black as its colors?",
+                "choices": [
+                    "Mar\u00edtimo",
+                    "Sporting CP",
+                    "Portimonense",
+                    "Boavista"
+                ],
+                "answer": "Portimonense"
+            },
+            {
+                "question": "What is the main rivalry match between Benfica and Sporting CP called?",
+                "choices": [
+                    "Cl\u00e1ssico do Norte",
+                    "O Cl\u00e1ssico",
+                    "D\u00e9rbi de Lisboa",
+                    "D\u00e9rbi da Invicta"
+                ],
+                "answer": "D\u00e9rbi de Lisboa"
+            },
+            {
+                "question": "Which club won their only Primeira Liga title in 2000\u201301?",
+                "choices": [
+                    "Boavista",
+                    "Braga",
+                    "Vit\u00f3ria SC",
+                    "Nacional"
+                ],
+                "answer": "Boavista"
+            },
+            {
+                "question": "Which Portuguese player moved from FC Porto to PSG in 2023?",
+                "choices": [
+                    "F\u00e1bio Vieira",
+                    "Vitinha",
+                    "Ot\u00e1vio",
+                    "Nuno Mendes"
+                ],
+                "answer": "Vitinha"
+            },
+            {
+                "question": "Which club was known for the 'white wall' of fans during home games?",
+                "choices": [
+                    "Benfica",
+                    "Sporting CP",
+                    "Vit\u00f3ria SC",
+                    "Boavista"
+                ],
+                "answer": "Vit\u00f3ria SC"
+            }
+        ]
+    }
+}

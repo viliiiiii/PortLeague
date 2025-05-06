@@ -1,0 +1,136 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Quiz - PortLeague{% endblock %}
+
+{% block content %}
+<div class="quiz-outer-wrapper">
+    <div class="quiz-select-container">
+        <!-- Header -->
+        <div class="quiz-select-header">
+            <h1>PortLeague Quiz</h1>
+            <p class="quiz-select-lead">Test your knowledge of Portuguese football!</p>
+        </div>
+        <!-- Quiz Modes -->
+        <div class="quiz-modes">
+            <div class="quiz-mode-card regular">
+                <h2>Regular Mode</h2>
+                <span class="badge regular">Beginner Friendly</span>
+                <p>Test your knowledge with easier questions and no time pressure.</p>
+                <a href="{% url 'games:quiz' %}?mode=regular" class="quiz-mode-btn regular">Start Regular Quiz</a>
+            </div>
+            <div class="quiz-mode-card hard">
+                <h2>Hard Mode</h2>
+                <span class="badge hard">Expert Level</span>
+                <p>Challenge yourself with harder questions and time pressure.</p>
+                <a href="{% url 'games:quiz' %}?mode=hard" class="quiz-mode-btn hard">Start Hard Quiz</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.quiz-outer-wrapper {
+    min-height: calc(100vh - 140px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.quiz-select-container {
+    flex: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.quiz-select-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+.quiz-select-header h1 {
+    color: var(--text-primary);
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+.quiz-select-lead {
+    color: var(--text-secondary);
+    font-size: 1.2em;
+}
+.quiz-modes {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.quiz-mode-card {
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 30px 24px;
+    text-align: center;
+    width: 320px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.quiz-mode-card h2 {
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+.badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 0.95em;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+.badge.regular {
+    background: var(--accent-color);
+    color: var(--bg-primary);
+}
+.badge.hard {
+    background: #f44336;
+    color: #fff;
+}
+.quiz-mode-card p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+.quiz-mode-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 1.1em;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+    margin-top: auto;
+}
+.quiz-mode-btn.regular {
+    background: var(--accent-color);
+    color: var(--bg-primary);
+}
+.quiz-mode-btn.regular:hover {
+    background: var(--hover-color);
+}
+.quiz-mode-btn.hard {
+    background: #f44336;
+    color: #fff;
+}
+.quiz-mode-btn.hard:hover {
+    background: #c62828;
+}
+@media (max-width: 900px) {
+    .quiz-modes {
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+}
+</style>
+{% endblock %} 

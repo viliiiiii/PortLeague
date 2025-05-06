@@ -1,27 +1,264 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h1>Football Quiz</h1>
+<div class="quiz-outer-wrapper">
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1>{% if timed %}Hard Challenge{% else %}Regular Quiz{% endif %}</h1>
+            {% if timed %}
+            <div class="timer" id="timer">
+                <span id="time-remaining">01:00</span>
+            </div>
+            {% endif %}
+        </div>
 
-{% if error %}
-    <p>{{ error }}</p>
-{% else %}
-    <h2>{{ question.question }}</h2>
-    
-    <form method="POST">
-        {% csrf_token %}
-        <input type="radio" name="answer" value="A"> {{ question.option_a }}<br>
-        <input type="radio" name="answer" value="B"> {{ question.option_b }}<br>
-        <input type="radio" name="answer" value="C"> {{ question.option_c }}<br>
-        <input type="radio" name="answer" value="D"> {{ question.option_d }}<br>
-        
-        <button type="submit">Submit</button>
-    </form>
+        {% if error %}
+            <div class="error-container">
+                <div class="error-card">
+                    <h2>Time's Up!</h2>
+                    <p class="error-message">{{ error }}</p>
+                    <div class="action-buttons">
+                        <a href="{% url 'games:quiz' %}" class="btn">Back to Quiz Selection</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <form method="post" id="quiz-form">
+                {% csrf_token %}
+                <input type="hidden" name="quiz_mode" id="quiz-mode" value="{{ timed|yesno:'timed,regular' }}">
+                <input type="hidden" name="timer_expired" id="timer-expired" value="false">
+                <div class="questions">
+                    {% for question in questions %}
+                    <div class="question-card">
+                        <p class="question-text">{{ question.question }}</p>
+                        <div class="options">
+                            {% for choice in question.choices %}
+                            <div class="option">
+                                <input type="radio" name="answer_{{ forloop.parentloop.counter0 }}" 
+                                       id="option_{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}" 
+                                       value="{{ forloop.counter0 }}" required>
+                                <label for="option_{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}">{{ choice }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="submit-btn">Submit Answers</button>
+            </form>
+        {% endif %}
+    </div>
+</div>
 
-    {% if result %}
-        <p><strong>{{ result }}</strong></p>
-    {% endif %}
-{% endif %}
+<style>
+.quiz-outer-wrapper {
+    min-height: calc(100vh - 140px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.quiz-container {
+    flex: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
 
+.quiz-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.quiz-header h1 {
+    color: var(--text-primary);
+    margin-bottom: 20px;
+}
+
+.timer {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin: 20px 0;
+}
+
+.timer.warning {
+    color: var(--error-color);
+}
+
+.error-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+.error-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.error-card h2 {
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+.action-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.btn {
+    display: block;
+    padding: 12px 20px;
+    background: var(--accent-color);
+    color: var(--bg-primary);
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 1.1em;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.btn:hover {
+    background: var(--hover-color);
+    transform: translateY(-2px);
+}
+
+.question-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.question-text {
+    color: var(--text-primary);
+    font-size: 1.1em;
+    margin-bottom: 15px;
+}
+
+.options {
+    display: grid;
+    gap: 10px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.option:hover {
+    background: var(--bg-tertiary);
+}
+
+.option input[type="radio"] {
+    margin-right: 10px;
+}
+
+.option label {
+    color: var(--text-primary);
+    cursor: pointer;
+    flex: 1;
+}
+
+.submit-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: var(--accent-color);
+    color: var(--bg-primary);
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.submit-btn:hover {
+    background: var(--hover-color);
+}
+
+@media (max-width: 768px) {
+    .quiz-container {
+        padding: 10px;
+    }
+
+    .option {
+        padding: 8px;
+    }
+
+    .error-container {
+        padding: 10px;
+        margin: 20px auto;
+    }
+}
+</style>
+
+<script>
+(function() {
+    let timer;
+    let timeLeft;
+
+    function startTimer(duration) {
+        timeLeft = duration;
+        updateTimerDisplay();
+
+        timer = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay();
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                document.getElementById('timer-expired').value = 'true';
+                document.getElementById('quiz-form').submit();
+            } else if (timeLeft <= 10) {
+                document.getElementById('timer').classList.add('warning');
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById('time-remaining').textContent = 
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    // Highlight selected options
+    document.querySelectorAll('.option').forEach(option => {
+        option.addEventListener('click', () => {
+            const radio = option.querySelector('input[type="radio"]');
+            radio.checked = true;
+        });
+    });
+
+    // Start timer if in timed mode
+    if (document.getElementById('timer')) {
+        startTimer(60); // 1 minute
+    }
+})();
+</script>
 {% endblock %}
 

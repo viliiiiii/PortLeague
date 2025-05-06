@@ -1,0 +1,648 @@
+{% extends "core/base.html" %}
+
+{% block title %}Profile - PortLeague{% endblock %}
+
+{% block content %}
+<div class="profile">
+    <div class="profile-grid">
+        <!-- Account Settings -->
+        <div class="settings-section">
+            <div class="card">
+                <h2>Account Settings</h2>
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="message {% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Account Info -->
+                <div class="info-card">
+                    <h3>Account Information</h3>
+                    <form method="post" class="settings-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" value="{{ user.username }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                        </div>
+                        <button type="submit" name="update_info" class="btn">Update Info</button>
+                    </form>
+                </div>
+
+                <!-- Password Change -->
+                <div class="info-card">
+                    <h3>Change Password</h3>
+                    <form method="post" class="settings-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="current_password">Current Password</label>
+                            <input type="password" id="current_password" name="current_password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_password">New Password</label>
+                            <input type="password" id="new_password" name="new_password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm New Password</label>
+                            <input type="password" id="confirm_password" name="confirm_password" required>
+                        </div>
+                        <button type="submit" name="change_password" class="btn">Change Password</button>
+                    </form>
+                </div>
+
+                <!-- Favorite Team -->
+                <div class="info-card">
+                    <h3>Favourite Team</h3>
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="favorite_team" class="block text-sm font-medium text-gray-700">Favorite Team</label>
+                            <select name="favorite_team" id="favorite_team" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <option value="">Select a team</option>
+                                {% for team in teams %}
+                                    <option value="{{ team.id }}" {% if user.userprofile.favorite_team == team %}selected{% endif %}>
+                                        {{ team.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" name="update_team" class="btn">Update Team</button>
+                    </form>
+                </div>
+
+                {% if profile.favorite_team %}
+                <div class="info-card">
+                    <h3>Homepage Info</h3>
+                    <p>Your homepage will prioritise showing matches involving {{ profile.favorite_team.name }}.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Predictions Section -->
+        <div class="predictions-section">
+            <div class="card">
+                <h2 class="section-title">Predictions</h2>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <label>Total Predictions</label>
+                        <span class="stat-value">{{ total_votes }}</span>
+                    </div>
+                    <div class="stat-card">
+                        <label>Correct Predictions</label>
+                        <span class="stat-value correct">{{ correct_votes }}</span>
+                    </div>
+                    <div class="stat-card">
+                        <label>Accuracy</label>
+                        <span class="stat-value">{{ accuracy_percentage }}%</span>
+                    </div>
+                </div>
+
+                <!-- Quiz Scores -->
+                <div class="quiz-scores">
+                    <h3>Best Quiz Scores</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <label>Regular Quiz</label>
+                            {% if quiz_scores.regular %}
+                                <span class="stat-value">{{ quiz_scores.regular.score }}%</span>
+                                <span class="date">{{ quiz_scores.regular.date_achieved|date:"F j, Y" }}</span>
+                            {% else %}
+                                <span class="not-attempted">Not attempted</span>
+                            {% endif %}
+                        </div>
+                        <div class="stat-card">
+                            <label>Hard Challenge</label>
+                            {% if quiz_scores.hard %}
+                                <span class="stat-value">{{ quiz_scores.hard.score }}%</span>
+                                <span class="date">{{ quiz_scores.hard.date_achieved|date:"F j, Y" }}</span>
+                            {% else %}
+                                <span class="not-attempted">Not attempted</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prediction Tabs -->
+                <div class="tabs">
+                    <button onclick="showTab('pending')" class="tab active">Pending</button>
+                    <button onclick="showTab('completed')" class="tab">Completed</button>
+                </div>
+
+                <!-- Pending Predictions -->
+                <div id="pending" class="tab-content active">
+                    {% if pending_predictions %}
+                        {% for vote in pending_predictions %}
+                        <div class="match-card">
+                            <div class="match-date">{{ vote.poll.match_date|date:"F j, Y - H:i" }}</div>
+                            <div class="match-teams">
+                                <div class="team">
+                                    <span>{{ vote.poll.home_team }}</span>
+                                </div>
+                                <span class="vs">vs</span>
+                                <div class="team">
+                                    <span>{{ vote.poll.away_team }}</span>
+                                </div>
+                            </div>
+                            <div class="prediction">
+                                <label>Your Prediction:</label>
+                                <span>
+                                    {% if vote.prediction == 'HOME' %}
+                                        {{ vote.poll.home_team }}
+                                    {% elif vote.prediction == 'AWAY' %}
+                                        {{ vote.poll.away_team }}
+                                    {% else %}
+                                        Draw
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-data">No pending predictions</p>
+                    {% endif %}
+                </div>
+
+                <!-- Completed Predictions -->
+                <div id="completed" class="tab-content">
+                    {% if completed_predictions %}
+                        {% for vote in completed_predictions %}
+                        <div class="match-card {% if vote.is_correct %}correct-prediction{% else %}wrong-prediction{% endif %}">
+                            <div class="match-date">{{ vote.poll.match_date|date:"F j, Y - H:i" }}</div>
+                            <div class="match-teams">
+                                <div class="team">
+                                    <span>{{ vote.poll.home_team }}</span>
+                                </div>
+                                <span class="vs">vs</span>
+                                <div class="team">
+                                    <span>{{ vote.poll.away_team }}</span>
+                                </div>
+                            </div>
+                            <div class="prediction-details">
+                                <div class="result-label">Result:</div>
+                                <div class="result-value">
+                                    {% if vote.poll.correct_outcome == 'HOME' %}
+                                        {{ vote.poll.home_team }}
+                                    {% elif vote.poll.correct_outcome == 'AWAY' %}
+                                        {{ vote.poll.away_team }}
+                                    {% else %}
+                                        Draw
+                                    {% endif %}
+                                </div>
+                                <div class="prediction-label">Your Prediction:</div>
+                                <div class="prediction-value {% if vote.is_correct %}correct{% else %}wrong{% endif %}">
+                                    {% if vote.prediction == 'HOME' %}
+                                        {{ vote.poll.home_team }} Win
+                                    {% elif vote.prediction == 'AWAY' %}
+                                        {{ vote.poll.away_team }} Win
+                                    {% else %}
+                                        Draw
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="status-indicator {% if vote.is_correct %}correct{% else %}wrong{% endif %}">
+                                {% if vote.is_correct %}✓{% else %}✕{% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-data">No completed predictions</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.profile {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+}
+
+.card {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.card h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.card h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.info-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.info-card h3 {
+    color: var(--accent-color);
+    margin-bottom: 15px;
+}
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group label {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--text-secondary);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.btn {
+    background: var(--accent-color);
+    color: var(--bg-primary);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background: var(--hover-color);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: var(--bg-tertiary);
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.stat-card label {
+    display: block;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.stat-value.correct {
+    color: var(--success-color, #4CAF50);
+}
+
+.tabs {
+    display: flex;
+    gap: 20px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.tab {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: 15px 5px;
+    cursor: pointer;
+    position: relative;
+    font-size: 18px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    min-width: 120px;
+    text-align: center;
+}
+
+.tab:hover {
+    color: var(--accent-color);
+}
+
+.tab.active {
+    color: var(--accent-color);
+}
+
+.tab.active:after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--accent-color);
+    border-radius: 3px 3px 0 0;
+}
+
+.tab-content {
+    display: none;
+    padding: 0 20px;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.match-card {
+    background: var(--bg-tertiary);
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.match-card.correct-prediction {
+    border: 1px solid #4CAF50;
+}
+
+.match-card.wrong-prediction {
+    border: 1px solid #f44336;
+}
+
+.status-indicator {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.status-indicator.correct {
+    background: #4CAF50;
+    color: white;
+}
+
+.status-indicator.wrong {
+    background: #f44336;
+    color: white;
+}
+
+.prediction-details {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.result-label, .prediction-label {
+    color: var(--text-secondary);
+}
+
+.result-value {
+    color: var(--text-primary);
+}
+
+.prediction-value {
+    font-weight: 500;
+}
+
+.prediction-value.correct {
+    color: #4CAF50;
+}
+
+.prediction-value.wrong {
+    color: #f44336;
+}
+
+.match-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.match-date {
+    color: var(--text-secondary);
+}
+
+.match-teams {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 15px 0;
+}
+
+.team {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.team img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+.vs {
+    color: var(--text-secondary);
+}
+
+.prediction {
+    text-align: center;
+    margin-top: 10px;
+    color: var(--text-primary);
+}
+
+.prediction-item {
+    margin: 5px 0;
+}
+
+.prediction label {
+    color: var(--text-secondary);
+    margin-right: 5px;
+}
+
+.status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.status.correct {
+    background: var(--success-color, #4CAF50);
+}
+
+.status.wrong {
+    background: var(--error-color, #f44336);
+}
+
+.correct {
+    color: var(--success-color, #4CAF50);
+}
+
+.wrong {
+    color: var(--error-color, #f44336);
+}
+
+.message {
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.message.success {
+    background: var(--success-color, #4CAF50);
+}
+
+.message.error {
+    background: var(--error-color, #f44336);
+}
+
+.no-data {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 20px;
+}
+
+/* Remove accessibility-specific styles that are now only in base.html */
+.settings-group,
+.theme-toggle,
+.font-controls,
+.theme-btn,
+.font-btn {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .match-teams {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .vs {
+        margin: 10px 0;
+    }
+}
+
+.quiz-scores {
+    margin-bottom: 30px;
+}
+
+.quiz-scores h3 {
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+.quiz-scores .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    max-width: 600px;
+    margin: 0 auto 20px;
+}
+
+.quiz-scores .stat-card {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.quiz-scores .date {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.quiz-scores .not-attempted {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    color: var(--text-primary);
+    width: 100%;
+}
+</style>
+
+<script>
+function showTab(tabName) {
+    // Update tabs
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Update content
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.getElementById(tabName).classList.add('active');
+}
+</script>
+{% endblock %} 
