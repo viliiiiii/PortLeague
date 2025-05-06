@@ -12,10 +12,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
 
 # Football-Data.org API Key
 FOOTBALL_API_KEY = "813c8cb1e58c43fd97b42f937b58622d"
@@ -28,12 +24,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'your-default-secret-key-for-development')
+SECRET_KEY = 'django-insecure-^sn=159%(1+!gylz=01i0*b-!91t!ln89*&e0$nkrggt%x*0cr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = False
 
-ALLOWED_HOSTS = ['fyp-1-8wew.onrender.com', 'localhost', '127.0.0.1']  # Remove https:// and add local development hosts
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "fyp-1-8wew.onrender.com",
+    os.getenv("RENDER_EXTERNAL_HOSTNAME"),  # Dynamically set Render hostname
+]
 
 
 # Application definition
@@ -53,7 +54,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -133,25 +133,10 @@ STATIC_URL = 'static/'
 # Ensure STATIC_ROOT is defined
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Login/Logout URLs
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'core:home'
-LOGOUT_REDIRECT_URL = 'core:home'
-
-# API Configuration
-API_KEY = os.getenv('API_KEY', 'your-api-key')
-API_BASE_URL = 'https://api.football-data.org/v4'
 
 # Session settings
 SESSION_COOKIE_AGE = 1800  # 30 minutes in seconds
