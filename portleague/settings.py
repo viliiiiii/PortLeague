@@ -27,12 +27,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-^sn=159%(1+!gylz=01i0*b-!91t!ln89*&e0$nkrggt%x*0cr')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "https://fyp-at81.onrender.com",
+    "fyp-at81.onrender.com",
     os.getenv("RENDER_EXTERNAL_HOSTNAME"),  # Dynamically set Render hostname
 ]
 
